@@ -21,7 +21,7 @@ typedef union {
 } lj_string_t;
 
 lj_string_t lj_str_from_chars(char* str) {
-  unsigned int req = strlen(str) + 1;
+  size_t req = strlen(str) + 1;
   if (req > sizeof(lji_bigstring_t)) {
     char* buf = (char*) malloc(req + (req >> 1));
     memcpy(buf, str, req);
@@ -40,7 +40,7 @@ lj_string_t lj_str_from_chars(char* str) {
   }
 }
 
-inline bool lj_str_is_big(lj_string_t str) {
+bool lj_str_is_big(lj_string_t str) {
   return (bool) ((intptr_t) str._big.capacity & 1);
 }
 
