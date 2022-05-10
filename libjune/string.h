@@ -23,7 +23,7 @@ typedef union {
 lj_string_t lj_str_from_chars(char* str) {
   unsigned int req = strlen(str) + 1;
   if (req > sizeof(lji_bigstring_t)) {
-    char* buf = (char *)malloc(req + (req >> 1));
+    char* buf = (char*) malloc(req + (req >> 1));
     memcpy(buf, str, req);
     return (lj_string_t) {
       ._big = (lji_bigstring_t) {
