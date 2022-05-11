@@ -30,7 +30,7 @@ lj_string_t lj_str_from_chars(char* str) {
         .contents = buf,
         .capacity = (req + (req >> 1) - 1) | 1,
         .length = req - 1,
-      }
+      },
     };
   } else {
     lj_string_t res = (lj_string_t) {0};
