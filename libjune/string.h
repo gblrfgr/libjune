@@ -10,11 +10,13 @@
 #include <stdlib.h>
 #include <assert.h>
 
+
 typedef struct {
     char* begin;
     char* contents_end;
     char* space_end;
 } lj_string_t;
+
 
 lj_string_t lj_str_from_chars(const char* s) {
     assert(s != NULL);
@@ -40,13 +42,14 @@ lj_string_t lj_str_from_array(const char* buf, size_t length) {
 
 void lj_str_reserve(size_t total_capacity, lj_string_t* s) {
     assert(s->begin != NULL);
-    if (total_capacity < (size_t) s->space_end - s->begin) {
+    if (total_capacity < lj_str_capacity(*s)) {
         size_t len = lj_str_length(*s);
         s->begin = (char*) realloc(s->begin, total_capacity);
         s->contents_end = (char*) ((intptr_t) s->begin + (intptr_t) len + 1);
         s->space_end = (char*) ((intptr_t) s->begin + (intptr_t) total_capacity);
     }
 }
+
 
 inline const char* lj_str_cstr(const lj_string_t s) {
     assert(s.begin != NULL);
@@ -62,6 +65,12 @@ inline size_t lj_str_excess(const lj_string_t s) {
     assert(s.begin != NULL);
     return (size_t) (s.space_end - s.contents_end);
 }
+
+inline size_t lj_str_capacity(const lj_string_t s) {
+    assert(s.begin != NULL);
+    return (size_t) (s.space_end - s.begin);
+}
+
 
 void lj_str_destroy(lj_string_t* s) {
     assert(s->begin != NULL);
