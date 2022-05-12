@@ -27,10 +27,10 @@ const char* LJI_LOGLEVEL_NAMES_K[] = {
 typedef struct {
     const char* format;
     lj_loglevel_t loglevel;
-    const FILE* out;
+    FILE* out;
 } lj_logger_t;
 
-lj_logger_t lj_build_logger(const char* format, lj_loglevel_t loglevel, const FILE* out) {
+lj_logger_t lj_build_logger(const char* format, lj_loglevel_t loglevel, FILE* out) {
     return (lj_logger_t) {
         .format = format,
         .loglevel = loglevel,
@@ -38,23 +38,16 @@ lj_logger_t lj_build_logger(const char* format, lj_loglevel_t loglevel, const FI
     };
 }
 
-void lj_log(lj_logger_t logger, lj_loglevel_t level, const char* message) {
-    if (logger.loglevel > level) {
-        return;
-    }
-    fputs(lji_logger_format(logger.format, message, time.gmtime(), loglevel), logger.out);
-}
-
-// example format string: "[%M/%D/%Y %h:%m:%s %l]\t%s"
+// example format string: "[$M/$D/$Y $h:$m:$s $l]\t$n"
 const char* lji_logger_format(const char* format, const char* message, const struct tm* gmt, lj_loglevel_t level) {
     lj_string_t res = lj_str_new_empty();
-    char* cursor = format;
+    const char* cursor = format;
     while (*cursor != '\0') {
         if (*cursor == '\\') {
             cursor++;
             assert(*cursor != '\0');
             lj_str_pushback(*cursor, &res);
-        } else if (*cursor == '%') {
+        } else if (*cursor == '$') {
             cursor++;
             switch (*cursor) {
                 case 'M': 
@@ -66,10 +59,10 @@ const char* lji_logger_format(const char* format, const char* message, const str
                     lj_str_pushback('0' + (gmt->tm_mday + 1) % 10, &res);
                     break;
                 case 'Y':
-                    lj_str_pushback('0' + (gmt->tm_year + 1) / 1000, &res);
-                    lj_str_pushback('0' + ((gmt->tm_year + 1) / 100) % 10, &res);
-                    lj_str_pushback('0' + ((gmt->tm_year + 1) / 10) % 10, &res);
-                    lj_str_pushback('0' + (gmt->tm_year + 1) % 10, &res);
+                    lj_str_pushback('0' + (gmt->tm_year + 1901) / 1000, &res);
+                    lj_str_pushback('0' + ((gmt->tm_year + 1901) / 100) % 10, &res);
+                    lj_str_pushback('0' + ((gmt->tm_year + 1901) / 10) % 10, &res);
+                    lj_str_pushback('0' + (gmt->tm_year + 1901) % 10, &res);
                     break;
                 case 'h':
                     lj_str_pushback('0' + (gmt->tm_hour + 1) / 10, &res);
@@ -86,17 +79,30 @@ const char* lji_logger_format(const char* format, const char* message, const str
                 case 'l':
                     lj_str_pushstr(LJI_LOGLEVEL_NAMES_K[level], &res);
                     break;
-                case 's':
+                case 'n':
                     lj_str_pushstr(message, &res);
+                    break;
+                case '$':
+                    lj_str_pushback('$', &res);
                     break;
                 default:
                     assert(false);
+            }
         } else {
             lj_str_pushback(*cursor, &res);
         }
         cursor++;
     }
     return lj_str_cstr(res);
+}
+
+void lj_log(lj_logger_t logger, lj_loglevel_t level, const char* message) {
+    if (logger.loglevel > level) {
+        return;
+    }
+    const time_t now = time(NULL);
+    fputs(lji_logger_format(logger.format, message, gmtime(&now), level), logger.out);
+    fputs("\n", logger.out);
 }
 
 
