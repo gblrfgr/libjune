@@ -50,7 +50,7 @@ const char* lji_logger_format(const char* format, const char* message, const str
     lj_string_t res = lj_str_new_empty();
     char* cursor = format;
     while (*cursor != '\0') {
-        if (*cursor == '\') {
+        if (*cursor == '\\') {
             cursor++;
             assert(*cursor != '\0');
             lj_str_pushback(*cursor, &res);
