@@ -31,6 +31,16 @@ lj_string_t lj_str_from_chars(const char* s) {
     };
 }
 
+lj_string_t lj_str_new_empty() {
+    char* space = malloc(1);
+    *space = '\0';
+    return (lj_string_t) {
+        .begin = space,
+        .contents_end = space,
+        .space_end = space,
+    };
+}
+
 lj_string_t lj_str_from_array(const char* buf, size_t length) {
     assert(buf != NULL);
     char* copy = memcpy(malloc(length + 1), s, length + 1);
