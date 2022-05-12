@@ -79,6 +79,15 @@ void lj_str_pushback(const char c, lj_string_t *s) {
     *(s->contents_end) = '\0';
 }
 
+void lj_str_pushstr(const char* s, lj_string_t *onto) {
+    assert(s->begin != NULL);
+    size_t len = strlen(s);
+    while (len > lj_str_excess(*s)) {
+        lji_str_autoexpand(s);
+    }
+    memcpy(onto->contents_end, s, len + 1);
+    onto->contents_end += len;
+}
 
 inline const char* lj_str_cstr(const lj_string_t s) {
     assert(s.begin != NULL);
