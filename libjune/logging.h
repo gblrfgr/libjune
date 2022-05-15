@@ -2,10 +2,11 @@
 #define LIBJUNE_LOGGING_H
 
 
-#include "libjune/string.h"
+#include "../libjune/silly.h"
+#include "../libjune/debug.h"
 #include <stdio.h>
+#include <string.h>
 #include <time.h>
-#include <assert.h>
 #include <stdbool.h>
 
 typedef enum {
@@ -30,23 +31,11 @@ typedef struct {
     FILE* out;
 } lj_logger_t;
 
-lj_logger_t lj_build_logger(const char* format, lj_loglevel_t loglevel, FILE* out) {
-    return (lj_logger_t) {
-        .format = format,
-        .loglevel = loglevel,
-        .out = out,
-    };
-}
-
-const char* lji_logger_format(const char* format, const char* message, const struct tm* gmt, lj_loglevel_t level) {
+lj_string_t lji_logger_format(const char* format, const char* message, const struct tm* gmt, lj_loglevel_t level) {
     lj_string_t res = lj_str_new_empty();
     const char* cursor = format;
     while (*cursor != '\0') {
-        if (*cursor == '\\') {
-            cursor++;
-            assert(*cursor != '\0');
-            lj_str_pushback(&res, *cursor);
-        } else if (*cursor == '$') {
+        if (*cursor == '$') {
             cursor++;
             switch (*cursor) {
                 case 'M': 
@@ -85,14 +74,14 @@ const char* lji_logger_format(const char* format, const char* message, const str
                     lj_str_pushback(&res, '$');
                     break;
                 default:
-                    assert(false);
+                    LJ_ASSERT(false, "invalid format string for logger");
             }
         } else {
             lj_str_pushback(&res, *cursor);
         }
         cursor++;
     }
-    return lj_str_cstr(res);
+    return res;
 }
 
 void lj_log(lj_logger_t logger, lj_loglevel_t level, const char* message) {
@@ -100,8 +89,11 @@ void lj_log(lj_logger_t logger, lj_loglevel_t level, const char* message) {
         return;
     }
     const time_t now = time(NULL);
-    fputs(lji_logger_format(logger.format, message, gmtime(&now), level), logger.out);
+    lj_string_t formatted = lji_logger_format(logger.format, message, gmtime(&now), level);
+    fputs(formatted.begin, logger.out);
     fputs("\n", logger.out);
+    fflush(logger.out);
+    lj_str_destroy(&formatted);
 }
 
 
