@@ -33,7 +33,7 @@ static char *test_indexing() {
   for (size_t i = 0; i < lj_vector_size(&vec); i++) {
     float val;
     lj_assert(lj_vector_get(&vec, i, &val), "index should be within range");
-    val = cosf(val);
+    val = 2.0f * val;
     lj_assert(lj_vector_set(&vec, i, &val), "index should be within range");
   }
   return 0;
@@ -42,4 +42,5 @@ static char *test_indexing() {
 int main(const int argc, const char **argv) {
   lj_run_test(test_push_back_pop_back);
   lj_run_test(test_indexing);
+  lj_finish_tests();
 }
