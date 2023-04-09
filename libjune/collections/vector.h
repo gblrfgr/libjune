@@ -24,7 +24,8 @@ const size_t LJI_BUFFER_INITIAL_SIZE = 8U;
 /// should use.
 /// @return The finished vector object.
 lj_vector_t lj_new_vector(size_t element_size, lj_allocator_t *allocator) {
-  void *buffer = lj_allocate(allocator, LJI_BUFFER_INITIAL_SIZE * element_size);
+  char *buffer =
+      (char *)lj_allocate(allocator, LJI_BUFFER_INITIAL_SIZE * element_size);
   return (lj_vector_t){
       .allocator = allocator,
       .element_size = element_size,
@@ -78,8 +79,8 @@ size_t lj_vector_capacity(lj_vector_t *vec) {
 }
 
 void lj_vector_reserve(lj_vector_t *vec, size_t space) {
-  while (lj_vector_capacity(&vec) < space) {
-    lji_vector_grow(&vec);
+  while (lj_vector_capacity(vec) < space) {
+    lji_vector_grow(vec);
   }
 }
 
