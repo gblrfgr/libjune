@@ -4,8 +4,10 @@
 #include <assert.h>
 #include <libjune/collections/vector.h>
 #include <libjune/memory.h>
+#include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -103,8 +105,28 @@ bool lj_string_substring(lj_string_t *str, size_t from, size_t to,
   if (from >= to || to >= lj_vector_size(str)) {
     return false;
   }
-  *out = lj_string_from_array(str->content_start + from, to - from, str->allocator);
+  *out = lj_string_from_array(str->content_start + from, to - from,
+                              str->allocator);
   return true;
+}
+
+lj_string_t lj_string_format(lj_string_t *fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  va_list final_args;
+  va_copy(final_args, args);
+  lj_string_t result = lj_string_new(fmt->allocator);
+  lj_string_reserve(&result, 12);
+  size_t necessary =
+      vsnprintf(result.content_start, 12, lj_string_to_cstr(fmt), args);
+  if (necessary > 11) {
+    lj_string_reserve(&result, necessary + 1);
+    vsprintf(result.content_start, lj_string_to_cstr(fmt), final_args);
+    result.content_end = result.buffer_end;
+  } else {
+    result.content_end = result.content_start + necessary + 1;
+  }
+  return result;
 }
 
 #endif
