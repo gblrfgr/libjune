@@ -1,3 +1,5 @@
+/// @file vector.h
+
 #ifndef LIBJUNE_COLLECTIONS_VECTOR_H
 #define LIBJUNE_COLLECTIONS_VECTOR_H
 
@@ -16,6 +18,7 @@ typedef struct {
   char *buffer_end;
 } lj_vector_t;
 
+/// @private
 const size_t LJI_BUFFER_INITIAL_SIZE = 8U;
 
 /// @brief Create a new lj_vector_t.
@@ -45,6 +48,7 @@ void lj_delete_vector(lj_vector_t *vec) {
       NULL;
 }
 
+/// @private
 void lji_vector_grow(lj_vector_t *vec) {
   ptrdiff_t empty_space = (vec->buffer_end - vec->buffer_start) -
                           (vec->content_end - vec->content_start);
@@ -78,12 +82,18 @@ size_t lj_vector_capacity(lj_vector_t *vec) {
   return (vec->buffer_end - vec->buffer_start) / vec->element_size;
 }
 
+/// @brief Grow the capacity of the vector to at least a certain size.
+/// @param vec The vector in question.
+/// @param space The space to grow to.
 void lj_vector_reserve(lj_vector_t *vec, size_t space) {
   while (lj_vector_capacity(vec) < space) {
     lji_vector_grow(vec);
   }
 }
 
+/// @brief Remove all the empty space in the vector buffer, leaving all
+/// remaining space full.
+/// @param vec The vector in question.
 void lj_vector_shrink_to_fit(lj_vector_t *vec) {
   char *new_buffer =
       lj_allocate(vec->allocator, vec->content_end - vec->content_start);
