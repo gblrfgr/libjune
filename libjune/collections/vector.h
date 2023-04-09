@@ -77,6 +77,23 @@ size_t lj_vector_capacity(lj_vector_t *vec) {
   return (vec->buffer_end - vec->buffer_start) / vec->element_size;
 }
 
+void lj_vector_reserve(lj_vector_t *vec, size_t space) {
+  while (lj_vector_capacity(&vec) < space) {
+    lji_vector_grow(&vec);
+  }
+}
+
+void lj_vector_shrink_to_fit(lj_vector_t *vec) {
+  char *new_buffer =
+      lj_allocate(vec->allocator, vec->content_end - vec->content_start);
+  memcpy(new_buffer, vec->content_start, vec->content_end - vec->content_start);
+  free(vec->buffer_start);
+  vec->buffer_start = new_buffer;
+  vec->buffer_end = new_buffer + (vec->content_end - vec->content_start);
+  vec->content_end = vec->buffer_end;
+  vec->content_start = vec->buffer_start;
+}
+
 /// @brief Clear out the contents of a vector.
 /// @param vec The vector to clear out.
 void lj_vector_clear(lj_vector_t *vec) {
