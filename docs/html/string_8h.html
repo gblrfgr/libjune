@@ -137,6 +137,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2d80a7fff9e222f707d043a4b3a89695"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="string_8h.html#a2d80a7fff9e222f707d043a4b3a89695">lj_string_pop_back</a> (<a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *str, char *out)</td></tr>
 <tr class="memdesc:a2d80a7fff9e222f707d043a4b3a89695"><td class="mdescLeft">&#160;</td><td class="mdescRight">Remove the last character from a string.  <br /></td></tr>
 <tr class="separator:a2d80a7fff9e222f707d043a4b3a89695"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aec6e58e925d78408b2568207d8ec1c25"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="string_8h.html#aec6e58e925d78408b2568207d8ec1c25">lj_string_equals</a> (<a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *a, <a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *b)</td></tr>
+<tr class="memdesc:aec6e58e925d78408b2568207d8ec1c25"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines if two strings are equal.  <br /></td></tr>
+<tr class="separator:aec6e58e925d78408b2568207d8ec1c25"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53fbcd3a69db030837d153a5db5d1a83"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="string_8h.html#a53fbcd3a69db030837d153a5db5d1a83">lj_string_concatenate</a> (<a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *one, <a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *two, <a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *out)</td></tr>
 <tr class="memdesc:a53fbcd3a69db030837d153a5db5d1a83"><td class="mdescLeft">&#160;</td><td class="mdescRight">Concatenate two strings.  <br /></td></tr>
 <tr class="separator:a53fbcd3a69db030837d153a5db5d1a83"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -216,6 +219,44 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="aec6e58e925d78408b2568207d8ec1c25" name="aec6e58e925d78408b2568207d8ec1c25"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec6e58e925d78408b2568207d8ec1c25">&#9670;&#160;</a></span>lj_string_equals()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool lj_string_equals </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="string_8h.html#aa016dc8e0e3f3b767dfc729138d0e24f">lj_string_t</a> *&#160;</td>
+          <td class="paramname"><em>b</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Determines if two strings are equal. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>The first string. </td></tr>
+    <tr><td class="paramname">b</td><td>The second string. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A bool indicating if the strings are equal. </dd></dl>
 
 </div>
 </div>

@@ -130,6 +130,14 @@ bool lj_string_pop_back(lj_string_t *str, char *out) {
   return true;
 }
 
+/// @brief Determines if two strings are equal.
+/// @param a The first string.
+/// @param b The second string.
+/// @return A bool indicating if the strings are equal.
+bool lj_string_equals(lj_string_t *a, lj_string_t *b) {
+  return strcmp(lj_string_to_cstr(a), lj_string_to_cstr(b)) == 0;
+}
+
 /// @brief Concatenate two strings.
 /// @param one The first string.
 /// @param two The second string. It must have the same allocator as the first
