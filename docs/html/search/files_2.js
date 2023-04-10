@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['vector_2eh_0',['vector.h',['../vector_8h.html',1,'']]]
+  ['string_2eh_0',['string.h',['../string_8h.html',1,'']]]
 ];
