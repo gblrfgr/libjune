@@ -3,7 +3,6 @@
 #ifndef LIBJUNE_STRING_H
 #define LIBJUNE_STRING_H
 
-#include <assert.h>
 #include <libjune/collections/vector.h>
 #include <libjune/memory.h>
 #include <stdarg.h>
