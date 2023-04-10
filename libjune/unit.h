@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-size_t lji_tests_run = 1U;
+size_t lji_tests_run = 0U;
 size_t lji_tests_failed = 0U;
 
 #define lj_assert(test, message)                                               \
