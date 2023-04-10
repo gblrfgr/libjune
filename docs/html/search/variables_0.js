@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['lji_5fbuffer_5finitial_5fsize_0',['LJI_BUFFER_INITIAL_SIZE',['../vector_8h.html#ad1ee1300343f30ce57d847be995dc5b9',1,'vector.h']]]
+  ['lj_5fdefault_5fallocator_0',['lj_default_allocator',['../memory_8h.html#a9579ff2db1b1ab53092f85e3f710884f',1,'memory.h']]]
 ];

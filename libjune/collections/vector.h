@@ -3,8 +3,7 @@
 #ifndef LIBJUNE_COLLECTIONS_VECTOR_H
 #define LIBJUNE_COLLECTIONS_VECTOR_H
 
-#include "libjune/memory.h"
-#include "libjune/utils.h"
+#include <libjune/memory.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -95,8 +94,8 @@ void lj_vector_reserve(lj_vector_t *vec, size_t space) {
 /// remaining space full.
 /// @param vec The vector in question.
 void lj_vector_shrink_to_fit(lj_vector_t *vec) {
-  char *new_buffer =
-      lj_allocate(vec->allocator, vec->content_end - vec->content_start);
+  char *new_buffer = (char *)lj_allocate(vec->allocator,
+                                         vec->content_end - vec->content_start);
   memcpy(new_buffer, vec->content_start, vec->content_end - vec->content_start);
   free(vec->buffer_start);
   vec->buffer_start = new_buffer;
