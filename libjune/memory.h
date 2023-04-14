@@ -31,6 +31,52 @@ void lj_deallocate(lj_allocator_t *allocator, void *memory) {
   allocator->deallocate_fn(allocator->state, memory);
 }
 
+///@private
+typedef struct {
+  char *buffer_start;
+  char *content_end;
+  char *buffer_end;
+  lj_allocator_t *parent_allocator;
+} lji_arena_allocator_state;
+
+///@private
+void *lji_arena_allocate_fn(void *state, size_t volume) {
+  lji_arena_allocator_state *arena_state = (lji_arena_allocator_state *)state;
+  if (arena_state->content_end + volume > arena_state->buffer_end) {
+    return NULL;
+  } else {
+    void *tmp = arena_state->content_end;
+    arena_state->content_end += volume;
+    return tmp;
+  }
+}
+
+///@private
+void lji_arena_deallocate_fn(void *state, void *memory) { return; }
+
+lj_allocator_t lj_arena_allocator_new(size_t buffer_length,
+                                      lj_allocator_t *parent_allocator) {
+  char *buffer_start = (char *)lj_allocate(
+      parent_allocator, buffer_length + sizeof(lji_arena_allocator_state));
+  // store state at the beginning of the arena buffer
+  lji_arena_allocator_state *state = (lji_arena_allocator_state *)buffer_start;
+  state->buffer_start = (char *)buffer_start;
+  state->content_end = state->buffer_start + sizeof(lji_arena_allocator_state);
+  state->buffer_end = state->content_end + buffer_length;
+  state->parent_allocator = parent_allocator;
+  return (lj_allocator_t){
+      .allocate_fn = &lji_arena_allocate_fn,
+      .deallocate_fn = &lji_arena_deallocate_fn,
+      .state = state,
+  };
+}
+
+void lj_arena_allocator_delete(lj_allocator_t *allocator) {
+  lji_arena_allocator_state *state =
+      (lji_arena_allocator_state *)allocator->state;
+  lj_deallocate(state->parent_allocator, state->buffer_start);
+}
+
 /// @private
 void *lji_default_allocate_fn(void *state, size_t volume) {
   return malloc(volume);
