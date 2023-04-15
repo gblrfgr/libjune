@@ -5,6 +5,7 @@
 
 #include <libjune/memory.h>
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 
 /// @brief Arraylike object that can automatically grow as elements are added.
@@ -47,26 +48,6 @@ void lj_delete_vector(lj_vector_t *vec) {
       NULL;
 }
 
-/// @private
-void lji_vector_grow(lj_vector_t *vec) {
-  ptrdiff_t empty_space = (vec->buffer_end - vec->buffer_start) -
-                          (vec->content_end - vec->content_start);
-  if (empty_space < ((vec->buffer_end - vec->buffer_start) / 2)) {
-    size_t new_capacity = (vec->buffer_end - vec->buffer_start);
-    new_capacity += new_capacity / 2;
-    new_capacity += vec->element_size - (new_capacity % vec->element_size);
-    size_t content_length = vec->content_end - vec->content_start;
-    void *buffer = lj_allocate(vec->allocator, new_capacity);
-    memcpy(buffer, vec->content_start, content_length);
-    vec->buffer_start = vec->content_start = (char *)buffer;
-    vec->buffer_end = vec->buffer_start + new_capacity;
-    vec->content_end = vec->content_start + content_length;
-  } else {
-    memmove(vec->buffer_start, vec->content_start,
-            (vec->content_end - vec->content_start));
-  }
-}
-
 /// @brief Gets the size of a vector.
 /// @param vec The vector in question.
 /// @return The size of the vector.
@@ -79,6 +60,21 @@ size_t lj_vector_size(lj_vector_t *vec) {
 /// @return The number of elements the vector can hold without growing.
 size_t lj_vector_capacity(lj_vector_t *vec) {
   return (vec->buffer_end - vec->buffer_start) / vec->element_size;
+}
+
+/// @private
+void lji_vector_grow(lj_vector_t *vec) {
+  memmove(vec->buffer_start, vec->content_start,
+          (vec->content_end - vec->content_start));
+  size_t new_capacity = lj_vector_capacity(vec);
+  new_capacity += new_capacity / 2;
+  new_capacity += vec->element_size - (new_capacity % vec->element_size);
+  size_t content_length = lj_vector_size(vec);
+  void *buffer = lj_allocate(vec->allocator, new_capacity);
+  memcpy(buffer, vec->content_start, content_length);
+  vec->buffer_start = vec->content_start = (char *)buffer;
+  vec->buffer_end = vec->buffer_start + new_capacity;
+  vec->content_end = vec->content_start + content_length;
 }
 
 /// @brief Grow the capacity of the vector to at least a certain size.
