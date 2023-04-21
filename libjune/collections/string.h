@@ -21,7 +21,7 @@ typedef lj_vector_t lj_string_t;
 lj_string_t lj_string_new(lj_allocator_t *allocator) {
   lj_string_t result = lj_new_vector(sizeof(char), allocator);
   const char terminator = '\0';
-  lj_vector_push_back(&result, &terminator);
+  lj_vector_push_back(&result, (void *) &terminator);
   return result;
 }
 
