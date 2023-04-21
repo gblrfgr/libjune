@@ -5,7 +5,6 @@
 
 #include <libjune/memory.h>
 #include <stdbool.h>
-#include <stdio.h>
 #include <string.h>
 
 /// @brief Arraylike object that can automatically grow as elements are added.

@@ -86,7 +86,7 @@ void *lji_default_allocate_fn(void *state, size_t volume) {
 void lji_default_deallocate_fn(void *state, void *memory) { free(memory); }
 
 /// @brief Default allocator. Uses libc malloc(1) and free(1).
-lj_allocator_t lj_default_allocator = (lj_allocator_t){
+static lj_allocator_t lj_default_allocator = (lj_allocator_t) {
     .allocate_fn = &lji_default_allocate_fn,
     .deallocate_fn = &lji_default_deallocate_fn,
     .state = NULL,

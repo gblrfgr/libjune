@@ -2,7 +2,7 @@
 #include <libjune/unit.h>
 #include <stdio.h>
 
-static char *test_concatenation() {
+static char *test_concatenation(void) {
   lj_string_t a = lj_string_from_cstr("Hello, ", &lj_default_allocator);
   lj_string_t b = lj_string_from_cstr("world!", &lj_default_allocator);
   lj_assert(!lj_string_equals(&a, &b),
@@ -16,7 +16,7 @@ static char *test_concatenation() {
   return 0;
 }
 
-static char *test_formatting() {
+static char *test_formatting(void) {
   lj_string_t fmt = lj_string_from_cstr("The length of this string is %zu!",
                                         &lj_default_allocator);
   lj_string_t formatted = lj_string_format(&fmt, lj_string_length(&fmt));
@@ -28,7 +28,7 @@ static char *test_formatting() {
   return 0;
 }
 
-static char *test_substrings() {
+static char *test_substrings(void) {
   lj_string_t original =
       lj_string_from_cstr("Gay rights", &lj_default_allocator);
   lj_string_t gay;

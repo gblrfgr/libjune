@@ -2,7 +2,6 @@
 #define LIBJUNE_UNIT_H
 
 #include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 size_t lji_tests_run = 0U;
