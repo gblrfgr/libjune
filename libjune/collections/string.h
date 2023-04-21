@@ -20,7 +20,8 @@ typedef lj_vector_t lj_string_t;
 /// @return The resulting string.
 lj_string_t lj_string_new(lj_allocator_t *allocator) {
   lj_string_t result = lj_new_vector(sizeof(char), allocator);
-  lj_vector_push_back(&result, '\0');
+  const char terminator = '\0';
+  lj_vector_push_back(&result, &terminator);
   return result;
 }
 
@@ -39,8 +40,9 @@ lj_string_t lj_string_from_array(const char *buf, size_t len,
   lj_string_t result = lj_new_vector(sizeof(char), allocator);
   lj_vector_reserve(&result, len + 1);
   memcpy(result.content_start, buf, len);
-  result.content_end = result.buffer_end - result.element_size;
-  lj_vector_push_back(&result, '\0');
+  result.content_end = result.content_start + len;
+  char NULL_TERMINATOR = '\0';
+  lj_vector_push_back(&result, &NULL_TERMINATOR);
   return result;
 }
 
@@ -52,7 +54,7 @@ lj_string_t lj_string_from_cstr(const char *str, lj_allocator_t *allocator) {
   lj_string_t result = lj_new_vector(sizeof(char), allocator);
   lj_vector_reserve(&result, strlen(str) + 1);
   strcpy(result.content_start, str);
-  result.content_end = result.buffer_end;
+  result.content_end = result.content_start + strlen(str) + 1;
   return result;
 }
 
@@ -193,10 +195,8 @@ lj_string_t lj_string_format(lj_string_t *fmt, ...) {
   if (necessary > INITIAL_TRY_LENGTH - 1) {
     lj_string_reserve(&result, necessary + 1);
     vsprintf(result.content_start, lj_string_to_cstr(fmt), final_args);
-    result.content_end = result.buffer_end;
-  } else {
-    result.content_end = result.content_start + necessary + 1;
   }
+  result.content_end = result.content_start + necessary + 1;
   return result;
 }
 
