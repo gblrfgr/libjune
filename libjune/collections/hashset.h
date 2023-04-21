@@ -36,4 +36,43 @@ void lj_hashset_delete(lj_hashset_t *set) {
   lj_deallocate(set->allocator, set->buckets);
 }
 
+bool lj_hashset_contains(lj_hashset_t *set, void *element) {
+  size_t bucket = set->hash_fn(element) % set->num_buckets;
+  for (size_t i = 0; i < lj_vector_size(&set->buckets[bucket]); i++) {
+    if (memcmp(element,
+               set->buckets[bucket].content_start + set->element_size * i,
+               set->element_size) == 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool lj_hashset_add(lj_hashset_t *set, void *element) {
+  size_t bucket = set->hash_fn(element) % set->num_buckets;
+  if (lj_hashset_contains(set, element)) {
+    return true;
+  }
+  lj_vector_push_back(&set->buckets[bucket], element);
+  return false;
+}
+
+bool lj_hashset_remove(lj_hashset_t *set, void *element) {
+  if (!lj_hashset_contains(set, element)) {
+    return false;
+  }
+  size_t bucket = set->hash_fn(element) % set->num_buckets;
+  for (size_t i = 0; i < lj_vector_size(&set->buckets[bucket]); i++) {
+    if (!memcmp(element,
+                set->buckets[bucket].content_start + set->element_size * i,
+                set->element_size) == 0) {
+      memcpy(&set->buckets[bucket].content_start + i * set->element_size,
+             &set->buckets[bucket].content_end - set->element_size,
+             set->element_size);
+      lj_vector_pop_back(&set->buckets[bucket], NULL);
+    }
+  }
+  return true;
+}
+
 #endif
